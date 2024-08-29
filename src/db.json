@@ -1,0 +1,32 @@
+{
+  "detections": [
+    {
+      "id": 1,
+      "timestamp": "2023-08-29T10:00:00Z",
+      "cameraId": "CAM001",
+      "objectType": "person",
+      "confidenceScore": 0.95
+    },
+    {
+      "id": 2,
+      "timestamp": "2023-08-29T10:05:00Z",
+      "cameraId": "CAM002",
+      "objectType": "vehicle",
+      "confidenceScore": 0.88
+    }
+  ],
+  "cameras": [
+    {
+      "id": "CAM001",
+      "name": "Front Entrance",
+      "location": "Main Building",
+      "streamUrl": "http://example.com/stream1"
+    },
+    {
+      "id": "CAM002",
+      "name": "Parking Lot",
+      "location": "East Wing",
+      "streamUrl": "http://example.com/stream2"
+    }
+  ]
+}
