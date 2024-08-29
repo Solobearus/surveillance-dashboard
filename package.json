@@ -11,6 +11,7 @@
     "mock-api": "json-server --watch db.json --port 3001"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.52.2",
     "axios": "^1.7.5",
     "hls.js": "^1.5.15",
     "react": "^18.3.1",
