@@ -245,5 +245,19 @@
       "objectType": "person",
       "confidenceScore": 0.95
     }
+  ],
+  "cameras": [
+    {
+      "id": "CAM001",
+      "name": "Front Entrance",
+      "location": "Main Building",
+      "streamUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+    },
+    {
+      "id": "CAM002",
+      "name": "Parking Lot",
+      "location": "East Wing",
+      "streamUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+    }
   ]
 }
