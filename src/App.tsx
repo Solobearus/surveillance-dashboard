@@ -1,3 +1,4 @@
+// App.tsx
 import React from "react";
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -11,7 +12,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
-        <div className="bg-gray-900 min-h-screen">
+        <div className="flex flex-col h-screen bg-gray-900 text-white">
           <nav className="bg-gray-800 p-4">
             <ul className="flex space-x-4">
               <li>
@@ -26,11 +27,12 @@ function App() {
               </li>
             </ul>
           </nav>
-
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/camera" element={<CameraStream />} />
-          </Routes>
+          <div className="flex-grow overflow-hidden">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/camera" element={<CameraStream />} />
+            </Routes>
+          </div>
         </div>
       </Router>
     </QueryClientProvider>

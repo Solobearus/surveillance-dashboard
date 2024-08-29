@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { fetchDetections, fetchCameras } from "../utils/api";
+import React, { useState, useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchDetections, fetchCameras } from "../api";
 import {
+  ResponsiveContainer,
   BarChart,
   Bar,
   LineChart,
@@ -10,21 +11,38 @@ import {
   YAxis,
   Tooltip,
   Legend,
-  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
 import { Detection, Camera } from "../types";
+import { Responsive, WidthProvider } from "react-grid-layout";
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
+import DetectionTable from "./DetectionTable";
+
+const ResponsiveGridLayout = WidthProvider(Responsive);
+
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 const Dashboard: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState<keyof Detection>("timestamp");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [selectedCharts, setSelectedCharts] = useState([
-    "daily",
-    "hourly",
-    "camera",
+  const [layouts, setLayouts] = useState({
+    lg: [
+      { i: "table", x: 0, y: 0, w: 6, h: 2 },
+      { i: "dailyCount", x: 6, y: 0, w: 3, h: 1 },
+      { i: "hourlyTrend", x: 9, y: 0, w: 3, h: 1 },
+      { i: "cameraActivity", x: 6, y: 1, w: 3, h: 1 },
+      { i: "objectType", x: 9, y: 1, w: 3, h: 1 },
+    ],
+  });
+
+  const [activeCharts, setActiveCharts] = useState([
+    "table",
+    "dailyCount",
+    "hourlyTrend",
+    "cameraActivity",
+    "objectType",
   ]);
-  const itemsPerPage = 10;
 
   const { data: detections, isLoading: detectionsLoading } = useQuery({
     queryKey: ["detections"],
@@ -36,10 +54,26 @@ const Dashboard: React.FC = () => {
     queryFn: fetchCameras,
   });
 
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const ws = new WebSocket("ws://localhost:8080");
+
+    ws.onmessage = (event) => {
+      const newDetection = JSON.parse(event.data);
+      queryClient.setQueryData(["detections"], (old: Detection[] | undefined) =>
+        old ? [newDetection, ...old] : [newDetection]
+      );
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, [queryClient]);
+
   if (detectionsLoading || camerasLoading)
     return <div className="text-white">Loading...</div>;
 
-  // Prepare data for daily detection count chart
   const dailyDetectionCount = detections?.reduce((acc, detection) => {
     const date = new Date(detection.timestamp).toLocaleDateString();
     acc[date] = (acc[date] || 0) + 1;
@@ -50,7 +84,6 @@ const Dashboard: React.FC = () => {
     ([date, count]) => ({ date, count })
   );
 
-  // Prepare data for hourly detection trend
   const hourlyDetectionTrend = detections?.reduce((acc, detection) => {
     const hour = new Date(detection.timestamp).getHours();
     acc[hour] = (acc[hour] || 0) + 1;
@@ -61,7 +94,6 @@ const Dashboard: React.FC = () => {
     ([hour, count]) => ({ hour: Number(hour), count })
   );
 
-  // Prepare data for camera activity comparison
   const cameraActivity = detections?.reduce((acc, detection) => {
     acc[detection.cameraId] = (acc[detection.cameraId] || 0) + 1;
     return acc;
@@ -71,27 +103,18 @@ const Dashboard: React.FC = () => {
     ([cameraId, count]) => ({ cameraId, count })
   );
 
-  // Filter and sort detections
-  const filteredDetections =
-    detections
-      ?.filter(
-        (detection) =>
-          detection.objectType
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          detection.cameraId.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-      .sort((a, b) => {
-        if (a[sortBy] < b[sortBy]) return sortOrder === "asc" ? -1 : 1;
-        if (a[sortBy] > b[sortBy]) return sortOrder === "asc" ? 1 : -1;
-        return 0;
-      }) || [];
+  const objectTypeDistribution = detections?.reduce((acc, detection) => {
+    acc[detection.objectType] = (acc[detection.objectType] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
 
-  const totalPages = Math.ceil(filteredDetections.length / itemsPerPage);
-  const paginatedDetections = filteredDetections.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+  const objectTypeChartData = Object.entries(objectTypeDistribution || {}).map(
+    ([name, value]) => ({ name, value })
   );
+
+  const removeChart = (chartId: string) => {
+    setActiveCharts(activeCharts.filter((id) => id !== chartId));
+  };
 
   return (
     <div className="p-6 bg-gray-900 min-h-screen">
@@ -99,43 +122,41 @@ const Dashboard: React.FC = () => {
         Surveillance Dashboard
       </h1>
 
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search detections..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="p-2 rounded bg-gray-800 text-white"
-        />
-      </div>
-
-      <div className="mb-4">
-        <label className="text-white mr-2">Charts to display:</label>
-        {["daily", "hourly", "camera"].map((chart) => (
-          <label key={chart} className="mr-4 text-white">
-            <input
-              type="checkbox"
-              checked={selectedCharts.includes(chart)}
-              onChange={() =>
-                setSelectedCharts((prev) =>
-                  prev.includes(chart)
-                    ? prev.filter((c) => c !== chart)
-                    : [...prev, chart]
-                )
-              }
-            />
-            {chart}
-          </label>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-        {selectedCharts.includes("daily") && (
-          <div className="bg-gray-800 p-4 rounded">
-            <h2 className="text-xl font-bold mb-2 text-white">
-              Daily Detection Count
+      <ResponsiveGridLayout
+        className="layout"
+        layouts={layouts}
+        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+        cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
+        rowHeight={window.innerHeight / 2 - 50}
+        onLayoutChange={(layout, layouts) => setLayouts(layouts)}
+      >
+        {activeCharts.includes("table") && (
+          <div key="table" className="bg-gray-800 p-4 rounded overflow-auto">
+            <h2 className="text-xl font-bold mb-2 text-white flex justify-between">
+              Detections
+              <button
+                onClick={() => removeChart("table")}
+                className="text-red-500"
+              >
+                &times;
+              </button>
             </h2>
-            <ResponsiveContainer width="100%" height={300}>
+            <DetectionTable detections={detections || []} />
+          </div>
+        )}
+
+        {activeCharts.includes("dailyCount") && (
+          <div key="dailyCount" className="bg-gray-800 p-4 rounded">
+            <h2 className="text-xl font-bold mb-2 text-white flex justify-between">
+              Daily Detection Count
+              <button
+                onClick={() => removeChart("dailyCount")}
+                className="text-red-500"
+              >
+                &times;
+              </button>
+            </h2>
+            <ResponsiveContainer width="100%" height="85%">
               <BarChart data={dailyChartData}>
                 <XAxis dataKey="date" stroke="#fff" />
                 <YAxis stroke="#fff" />
@@ -147,12 +168,18 @@ const Dashboard: React.FC = () => {
           </div>
         )}
 
-        {selectedCharts.includes("hourly") && (
-          <div className="bg-gray-800 p-4 rounded">
-            <h2 className="text-xl font-bold mb-2 text-white">
+        {activeCharts.includes("hourlyTrend") && (
+          <div key="hourlyTrend" className="bg-gray-800 p-4 rounded">
+            <h2 className="text-xl font-bold mb-2 text-white flex justify-between">
               Hourly Detection Trend
+              <button
+                onClick={() => removeChart("hourlyTrend")}
+                className="text-red-500"
+              >
+                &times;
+              </button>
             </h2>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height="85%">
               <LineChart data={hourlyChartData}>
                 <XAxis dataKey="hour" stroke="#fff" />
                 <YAxis stroke="#fff" />
@@ -164,12 +191,18 @@ const Dashboard: React.FC = () => {
           </div>
         )}
 
-        {selectedCharts.includes("camera") && (
-          <div className="bg-gray-800 p-4 rounded">
-            <h2 className="text-xl font-bold mb-2 text-white">
-              Camera Activity Comparison
+        {activeCharts.includes("cameraActivity") && (
+          <div key="cameraActivity" className="bg-gray-800 p-4 rounded">
+            <h2 className="text-xl font-bold mb-2 text-white flex justify-between">
+              Camera Activity
+              <button
+                onClick={() => removeChart("cameraActivity")}
+                className="text-red-500"
+              >
+                &times;
+              </button>
             </h2>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height="85%">
               <BarChart data={cameraChartData}>
                 <XAxis dataKey="cameraId" stroke="#fff" />
                 <YAxis stroke="#fff" />
@@ -180,95 +213,43 @@ const Dashboard: React.FC = () => {
             </ResponsiveContainer>
           </div>
         )}
-      </div>
 
-      <h2 className="text-2xl font-bold mb-4 text-white">Detections Table</h2>
-      <table className="w-full mb-4">
-        <thead>
-          <tr className="bg-gray-800 text-white">
-            <th
-              className="p-2 cursor-pointer"
-              onClick={() => {
-                setSortBy("id");
-                setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-              }}
-            >
-              ID
-            </th>
-            <th
-              className="p-2 cursor-pointer"
-              onClick={() => {
-                setSortBy("timestamp");
-                setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-              }}
-            >
-              Timestamp
-            </th>
-            <th
-              className="p-2 cursor-pointer"
-              onClick={() => {
-                setSortBy("cameraId");
-                setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-              }}
-            >
-              Camera
-            </th>
-            <th
-              className="p-2 cursor-pointer"
-              onClick={() => {
-                setSortBy("objectType");
-                setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-              }}
-            >
-              Object Type
-            </th>
-            <th
-              className="p-2 cursor-pointer"
-              onClick={() => {
-                setSortBy("confidenceScore");
-                setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-              }}
-            >
-              Confidence
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedDetections.map((detection) => (
-            <tr key={detection.id} className="text-white">
-              <td className="p-2">{detection.id}</td>
-              <td className="p-2">
-                {new Date(detection.timestamp).toLocaleString()}
-              </td>
-              <td className="p-2">{detection.cameraId}</td>
-              <td className="p-2">{detection.objectType}</td>
-              <td className="p-2">{detection.confidenceScore.toFixed(2)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div className="flex justify-between items-center text-white">
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-          className="bg-blue-500 px-4 py-2 rounded disabled:opacity-50"
-        >
-          Previous
-        </button>
-        <span>
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
-          disabled={currentPage === totalPages}
-          className="bg-blue-500 px-4 py-2 rounded disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
+        {activeCharts.includes("objectType") && (
+          <div key="objectType" className="bg-gray-800 p-4 rounded">
+            <h2 className="text-xl font-bold mb-2 text-white flex justify-between">
+              Object Type Distribution
+              <button
+                onClick={() => removeChart("objectType")}
+                className="text-red-500"
+              >
+                &times;
+              </button>
+            </h2>
+            <ResponsiveContainer width="100%" height="85%">
+              <PieChart>
+                <Pie
+                  data={objectTypeChartData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  outerRadius="80%"
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {objectTypeChartData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </ResponsiveGridLayout>
     </div>
   );
 };

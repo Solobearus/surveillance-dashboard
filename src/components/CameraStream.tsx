@@ -1,78 +1,69 @@
+// components/CameraStream.tsx
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchCameras, fetchDetections } from "../utils/api";
-import Hls from "hls.js";
+import { fetchDetections, fetchCameras } from "../api";
+import { Detection, Camera } from "../types";
+import DetectionTable from "./DetectionTable";
 
 const CameraStream: React.FC = () => {
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
-  const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>(
-    null
-  );
 
-  const { data: cameras } = useQuery({
-    queryKey: ["cameras"],
-    queryFn: fetchCameras,
-  });
-
-  const { data: detections } = useQuery({
+  const { data: detections, isLoading: detectionsLoading } = useQuery<
+    Detection[]
+  >({
     queryKey: ["detections"],
     queryFn: fetchDetections,
   });
 
-  useEffect(() => {
-    if (selectedCamera && videoElement) {
-      const camera = cameras?.find((c) => c.id === selectedCamera);
-      if (camera && Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(camera.streamUrl);
-        hls.attachMedia(videoElement);
-      }
-    }
-  }, [selectedCamera, videoElement, cameras]);
+  const { data: cameras, isLoading: camerasLoading } = useQuery<Camera[]>({
+    queryKey: ["cameras"],
+    queryFn: fetchCameras,
+  });
 
-  const filteredDetections =
-    detections?.filter((d) => d.cameraId === selectedCamera) || [];
+  if (detectionsLoading || camerasLoading) return <div>Loading...</div>;
 
   return (
-    <div className="p-6 bg-gray-900 min-h-screen text-white">
+    <div className="h-full p-6 bg-gray-900 text-white">
       <h1 className="text-3xl font-bold mb-6">Camera Stream</h1>
       <div className="mb-4">
         <select
+          className="bg-gray-700 text-white p-2 rounded"
           value={selectedCamera || ""}
           onChange={(e) => setSelectedCamera(e.target.value)}
-          className="p-2 rounded bg-gray-800 text-white"
         >
           <option value="">Select a camera</option>
           {cameras?.map((camera) => (
             <option key={camera.id} value={camera.id}>
-              {camera.name}
+              {camera.id}: {camera.name}
             </option>
           ))}
         </select>
       </div>
-      {selectedCamera && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <video
-              ref={(el) => setVideoElement(el)}
-              controls
-              className="w-full rounded"
-            />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Recent Detections</h2>
-            <ul className="bg-gray-800 rounded p-4">
-              {filteredDetections.slice(0, 10).map((detection) => (
-                <li key={detection.id} className="mb-2">
-                  {new Date(detection.timestamp).toLocaleString()} -{" "}
-                  {detection.objectType} (Confidence:{" "}
-                  {detection.confidenceScore.toFixed(2)})
-                </li>
-              ))}
-            </ul>
-          </div>
+      <div className="grid grid-cols-2 gap-4 h-[calc(100%-120px)]">
+        <div className="bg-gray-800 p-4 rounded">
+          <h2 className="text-xl font-bold mb-2">Live Stream</h2>
+          {selectedCamera ? (
+            <video className="w-full h-[calc(100%-40px)]" controls>
+              <source
+                src={cameras?.find((c) => c.id === selectedCamera)?.streamUrl}
+                type="application/x-mpegURL"
+              />
+              Your browser does not support the video tag.
+            </video>
+          ) : (
+            <div className="w-full h-[calc(100%-40px)] flex items-center justify-center bg-gray-700">
+              <p>Select a camera to view the stream</p>
+            </div>
+          )}
         </div>
-      )}
+        <div className="bg-gray-800 p-4 rounded">
+          <h2 className="text-xl font-bold mb-2">Recent Detections</h2>
+          <DetectionTable
+            detections={detections || []}
+            currentCameraId={selectedCamera || undefined}
+          />
+        </div>
+      </div>
     </div>
   );
 };

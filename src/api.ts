@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Detection, Camera } from "../types";
+import { Detection, Camera } from "./types";
 
 const API_URL = "http://localhost:3001";
 
