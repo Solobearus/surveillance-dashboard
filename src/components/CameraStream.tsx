@@ -1,16 +1,14 @@
 // components/CameraStream.tsx
 import React, { useState, useEffect, useRef } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { fetchDetections, fetchCameras } from "../api";
 import { Detection, Camera } from "../types";
 import DetectionTable from "./DetectionTable";
 import Hls from "hls.js";
-import { toast } from "react-toastify";
 
 const CameraStream: React.FC = () => {
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const queryClient = useQueryClient();
 
   const { data: detections, isLoading: detectionsLoading } = useQuery<
     Detection[]
@@ -23,47 +21,6 @@ const CameraStream: React.FC = () => {
     queryKey: ["cameras"],
     queryFn: fetchCameras,
   });
-
-  useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8080");
-
-    ws.onopen = () => {
-      console.log("WebSocket connected");
-    };
-
-    ws.onmessage = (event) => {
-      console.log("Message recieved:", event.data);
-      const newDetection = JSON.parse(event.data);
-
-      const fixedNewDetection: Detection = {
-        ...newDetection,
-        confidenceScore: parseFloat(newDetection.confidenceScore),
-      };
-
-      queryClient.setQueryData<Detection[]>(["detections"], (old) => {
-        if (old) {
-          return [fixedNewDetection, ...old];
-        }
-        return [fixedNewDetection];
-      });
-      toast(
-        `New detection: ${fixedNewDetection.objectType} on ${fixedNewDetection.cameraId}`
-      );
-    };
-
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-      toast.error("Failed to connect to WebSocket server");
-    };
-
-    ws.onclose = () => {
-      console.log("WebSocket disconnected");
-    };
-
-    return () => {
-      ws.close();
-    };
-  }, [queryClient]);
 
   useEffect(() => {
     if (selectedCamera && videoRef.current) {
@@ -115,10 +72,16 @@ const CameraStream: React.FC = () => {
         </div>
         <div className="bg-gray-800 p-4 rounded">
           <h2 className="text-xl font-bold mb-2">Recent Detections</h2>
-          <DetectionTable
-            detections={detections || []}
-            currentCameraId={selectedCamera || undefined}
-          />
+          {selectedCamera ? (
+            <DetectionTable
+              detections={detections || []}
+              currentCameraId={selectedCamera}
+            />
+          ) : (
+            <div className="w-full h-[calc(100%-40px)] flex items-center justify-center bg-gray-700">
+              <p>Select a camera to view detections</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

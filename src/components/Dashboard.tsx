@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+// Dashboard.tsx
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { fetchDetections, fetchCameras } from "../api";
 import {
   ResponsiveContainer,
@@ -53,23 +54,6 @@ const Dashboard: React.FC = () => {
     queryKey: ["cameras"],
     queryFn: fetchCameras,
   });
-
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8080");
-
-    ws.onmessage = (event) => {
-      const newDetection = JSON.parse(event.data);
-      queryClient.setQueryData(["detections"], (old: Detection[] | undefined) =>
-        old ? [newDetection, ...old] : [newDetection]
-      );
-    };
-
-    return () => {
-      ws.close();
-    };
-  }, [queryClient]);
 
   if (detectionsLoading || camerasLoading)
     return <div className="text-white">Loading...</div>;
