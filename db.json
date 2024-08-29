@@ -2,31 +2,248 @@
   "detections": [
     {
       "id": 1,
-      "timestamp": "2023-08-29T10:00:00Z",
+      "timestamp": "2023-08-15T10:00:00Z",
       "cameraId": "CAM001",
       "objectType": "person",
       "confidenceScore": 0.95
     },
     {
       "id": 2,
-      "timestamp": "2023-08-29T10:05:00Z",
+      "timestamp": "2023-08-15T10:05:00Z",
       "cameraId": "CAM002",
       "objectType": "vehicle",
       "confidenceScore": 0.88
-    }
-  ],
-  "cameras": [
-    {
-      "id": "CAM001",
-      "name": "Front Entrance",
-      "location": "Main Building",
-      "streamUrl": "http://example.com/stream1"
     },
     {
-      "id": "CAM002",
-      "name": "Parking Lot",
-      "location": "East Wing",
-      "streamUrl": "http://example.com/stream2"
+      "id": 3,
+      "timestamp": "2023-08-16T10:10:00Z",
+      "cameraId": "CAM001",
+      "objectType": "person",
+      "confidenceScore": 0.92
+    },
+    {
+      "id": 4,
+      "timestamp": "2023-08-16T11:15:00Z",
+      "cameraId": "CAM003",
+      "objectType": "animal",
+      "confidenceScore": 0.85
+    },
+    {
+      "id": 5,
+      "timestamp": "2023-08-17T11:20:00Z",
+      "cameraId": "CAM004",
+      "objectType": "vehicle",
+      "confidenceScore": 0.89
+    },
+    {
+      "id": 6,
+      "timestamp": "2023-08-17T11:25:00Z",
+      "cameraId": "CAM005",
+      "objectType": "person",
+      "confidenceScore": 0.93
+    },
+    {
+      "id": 7,
+      "timestamp": "2023-08-18T11:30:00Z",
+      "cameraId": "CAM002",
+      "objectType": "vehicle",
+      "confidenceScore": 0.87
+    },
+    {
+      "id": 8,
+      "timestamp": "2023-08-18T11:35:00Z",
+      "cameraId": "CAM003",
+      "objectType": "animal",
+      "confidenceScore": 0.82
+    },
+    {
+      "id": 9,
+      "timestamp": "2023-08-19T11:40:00Z",
+      "cameraId": "CAM006",
+      "objectType": "person",
+      "confidenceScore": 0.94
+    },
+    {
+      "id": 10,
+      "timestamp": "2023-08-19T11:45:00Z",
+      "cameraId": "CAM007",
+      "objectType": "vehicle",
+      "confidenceScore": 0.91
+    },
+    {
+      "id": 11,
+      "timestamp": "2023-08-20T11:50:00Z",
+      "cameraId": "CAM001",
+      "objectType": "person",
+      "confidenceScore": 0.96
+    },
+    {
+      "id": 12,
+      "timestamp": "2023-08-20T12:55:00Z",
+      "cameraId": "CAM002",
+      "objectType": "vehicle",
+      "confidenceScore": 0.9
+    },
+    {
+      "id": 13,
+      "timestamp": "2023-08-20T13:00:00Z",
+      "cameraId": "CAM003",
+      "objectType": "animal",
+      "confidenceScore": 0.83
+    },
+    {
+      "id": 14,
+      "timestamp": "2023-08-21T13:05:00Z",
+      "cameraId": "CAM004",
+      "objectType": "vehicle",
+      "confidenceScore": 0.86
+    },
+    {
+      "id": 15,
+      "timestamp": "2023-08-21T14:10:00Z",
+      "cameraId": "CAM005",
+      "objectType": "person",
+      "confidenceScore": 0.92
+    },
+    {
+      "id": 16,
+      "timestamp": "2023-08-21T15:15:00Z",
+      "cameraId": "CAM006",
+      "objectType": "animal",
+      "confidenceScore": 0.84
+    },
+    {
+      "id": 17,
+      "timestamp": "2023-08-21T16:20:00Z",
+      "cameraId": "CAM007",
+      "objectType": "vehicle",
+      "confidenceScore": 0.88
+    },
+    {
+      "id": 18,
+      "timestamp": "2023-08-22T16:25:00Z",
+      "cameraId": "CAM001",
+      "objectType": "person",
+      "confidenceScore": 0.93
+    },
+    {
+      "id": 19,
+      "timestamp": "2023-08-22T16:30:00Z",
+      "cameraId": "CAM002",
+      "objectType": "vehicle",
+      "confidenceScore": 0.87
+    },
+    {
+      "id": 20,
+      "timestamp": "2023-08-23T16:35:00Z",
+      "cameraId": "CAM003",
+      "objectType": "animal",
+      "confidenceScore": 0.81
+    },
+    {
+      "id": 21,
+      "timestamp": "2023-08-23T17:40:00Z",
+      "cameraId": "CAM004",
+      "objectType": "person",
+      "confidenceScore": 0.95
+    },
+    {
+      "id": 22,
+      "timestamp": "2023-08-23T17:45:00Z",
+      "cameraId": "CAM005",
+      "objectType": "vehicle",
+      "confidenceScore": 0.89
+    },
+    {
+      "id": 23,
+      "timestamp": "2023-08-24T17:50:00Z",
+      "cameraId": "CAM006",
+      "objectType": "animal",
+      "confidenceScore": 0.83
+    },
+    {
+      "id": 24,
+      "timestamp": "2023-08-24T18:55:00Z",
+      "cameraId": "CAM007",
+      "objectType": "person",
+      "confidenceScore": 0.94
+    },
+    {
+      "id": 25,
+      "timestamp": "2023-08-24T19:00:00Z",
+      "cameraId": "CAM001",
+      "objectType": "person",
+      "confidenceScore": 0.88
+    },
+    {
+      "id": 26,
+      "timestamp": "2023-08-24T20:05:00Z",
+      "cameraId": "CAM002",
+      "objectType": "animal",
+      "confidenceScore": 0.8
+    },
+    {
+      "id": 27,
+      "timestamp": "2023-08-25T21:10:00Z",
+      "cameraId": "CAM003",
+      "objectType": "person",
+      "confidenceScore": 0.96
+    },
+    {
+      "id": 28,
+      "timestamp": "2023-08-25T22:15:00Z",
+      "cameraId": "CAM004",
+      "objectType": "vehicle",
+      "confidenceScore": 0.9
+    },
+    {
+      "id": 29,
+      "timestamp": "2023-08-26T23:20:00Z",
+      "cameraId": "CAM005",
+      "objectType": "person",
+      "confidenceScore": 0.84
+    },
+    {
+      "id": 30,
+      "timestamp": "2023-08-26T23:25:00Z",
+      "cameraId": "CAM006",
+      "objectType": "person",
+      "confidenceScore": 0.93
+    },
+    {
+      "id": 31,
+      "timestamp": "2023-08-27T23:30:00Z",
+      "cameraId": "CAM007",
+      "objectType": "vehicle",
+      "confidenceScore": 0.87
+    },
+    {
+      "id": 32,
+      "timestamp": "2023-08-27T23:35:00Z",
+      "cameraId": "CAM001",
+      "objectType": "person",
+      "confidenceScore": 0.94
+    },
+    {
+      "id": 33,
+      "timestamp": "2023-08-27T23:40:00Z",
+      "cameraId": "CAM002",
+      "objectType": "person",
+      "confidenceScore": 0.88
+    },
+    {
+      "id": 34,
+      "timestamp": "2023-08-27T23:45:00Z",
+      "cameraId": "CAM003",
+      "objectType": "animal",
+      "confidenceScore": 0.82
+    },
+    {
+      "id": 35,
+      "timestamp": "2023-08-28T00:50:00Z",
+      "cameraId": "CAM004",
+      "objectType": "person",
+      "confidenceScore": 0.95
     }
   ]
 }
