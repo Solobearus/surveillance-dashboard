@@ -14,7 +14,6 @@ export function useWebSocket() {
     };
 
     ws.onmessage = (event) => {
-      console.log("Message received:", event.data);
       const newDetection = JSON.parse(event.data);
 
       const fixedNewDetection: Detection = {
@@ -22,7 +21,6 @@ export function useWebSocket() {
         confidenceScore: parseFloat(newDetection.confidenceScore),
       };
 
-      console.log("Fixed detection:", fixedNewDetection);
       queryClient.setQueryData<Detection[]>(["detections"], (old) => {
         if (old) {
           return [fixedNewDetection, ...old];

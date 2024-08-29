@@ -1,50 +1,57 @@
-# React + TypeScript + Vite
+# Surveillance Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a surveillance dashboard application that displays real-time detection data from multiple cameras.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Real-time updates of detection data
+- Live camera streams
+- Interactive dashboard with customizable charts
+- Detailed view of individual camera detections
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. Clone the repository
+2. Install dependencies:
 
-- Configure the top-level `parserOptions` property like this:
+```
+npm install
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+3. Start the application:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
 ```
+npm start
+```
+
+This command will start the React application, mock API server, and WebSocket server concurrently.
+
+## Technologies Used
+
+- React
+- TypeScript
+- React Query
+- React Router
+- Recharts
+- React Grid Layout
+- HLS.js
+- JSON Server (for mock API)
+- WebSocket (for real-time updates)
+
+## Project Structure
+
+- `src/components`: React components
+- `src/hooks`: Custom React hooks
+- `src/api`: API functions
+- `src/types`: TypeScript type definitions
+- `db.json`: Mock database for JSON Server
+- `mockWebSocket.js`: Mock WebSocket server
+
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
