@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Dashboard from "./components/Dashboard";
 import CameraStream from "./components/CameraStream";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -35,6 +37,7 @@ function App() {
           </div>
         </div>
       </Router>
+      <ToastContainer />
     </QueryClientProvider>
   );
 }
