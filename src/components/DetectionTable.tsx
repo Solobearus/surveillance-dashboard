@@ -63,8 +63,8 @@ const DetectionTable: React.FC<DetectionTableProps> = ({
   };
 
   return (
-    <div className="flex flex-col overflow-scroll-y h-full">
-      <div className="mb-2 flex-shrink-0">
+    <div className="flex flex-col flex-1 overflow-scroll-y">
+      <div className="mb-2">
         <input
           type="text"
           placeholder="Search detections..."
@@ -74,7 +74,7 @@ const DetectionTable: React.FC<DetectionTableProps> = ({
         />
       </div>
 
-      <div className="flex-shrink-1 flex-1">
+      <div className="flex-1 overflow-auto">
         <Table>
           <thead>
             <TableRow>
@@ -103,7 +103,7 @@ const DetectionTable: React.FC<DetectionTableProps> = ({
       </div>
 
       {/* Pagination */}
-      <div className="mt-2 flex justify-between items-center flex-shrink-0">
+      <div className="mt-2 flex justify-between items-center">
         <Button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}

@@ -1,4 +1,3 @@
-// components/styled/Table.tsx
 import React from "react";
 
 interface TableProps {
@@ -7,7 +6,9 @@ interface TableProps {
 
 const Table: React.FC<TableProps> = ({ children }) => {
   return (
-    <table className="w-full text-sm text-left text-gray-300">{children}</table>
+    <table className="w-full flex-1 text-sm text-left text-gray-300">
+      {children}
+    </table>
   );
 };
 

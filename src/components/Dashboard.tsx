@@ -51,13 +51,6 @@ type ChartId = keyof typeof chartDefinitions;
 const Dashboard: React.FC = () => {
   const [chartLayouts, setChartLayouts] = useState(chartDefinitions);
 
-  const toggleChart = (chartId: ChartId) => {
-    setChartLayouts((prev) => ({
-      ...prev,
-      [chartId]: { ...prev[chartId], visible: !prev[chartId].visible },
-    }));
-  };
-
   const { data: detections, isLoading: detectionsLoading } = useQuery<
     Detection[]
   >({
@@ -69,10 +62,6 @@ const Dashboard: React.FC = () => {
     queryKey: ["cameras"],
     queryFn: fetchCameras,
   });
-
-  if (detectionsLoading || camerasLoading) {
-    return <div className="text-white">Loading...</div>;
-  }
 
   const updateLayoutsFromChange = useCallback(
     (layouts: { lg?: Layout[] }) => {
@@ -92,6 +81,13 @@ const Dashboard: React.FC = () => {
     [chartLayouts]
   );
 
+  const toggleChart = useCallback((chartId: ChartId) => {
+    setChartLayouts((prev) => ({
+      ...prev,
+      [chartId]: { ...prev[chartId], visible: !prev[chartId].visible },
+    }));
+  }, []);
+
   const layouts = useMemo(
     () => ({
       lg: Object.values(chartLayouts)
@@ -100,6 +96,10 @@ const Dashboard: React.FC = () => {
     }),
     [chartLayouts]
   );
+
+  if (detectionsLoading || camerasLoading) {
+    return <div className="text-white">Loading...</div>;
+  }
 
   return (
     <div className="p-6 bg-gray-900">
@@ -138,7 +138,7 @@ const Dashboard: React.FC = () => {
           return (
             chart.visible && (
               <div key={id} data-grid={chart.layout}>
-                <div className="bg-gray-800 p-4 rounded-lg h-full">
+                <div className="bg-gray-800 p-4 rounded-lg h-full flex flex-col">
                   <div className="flex justify-between items-center mb-2">
                     <h3 className="text-lg font-semibold text-white draggable-handle cursor-move">
                       {chart.title}
