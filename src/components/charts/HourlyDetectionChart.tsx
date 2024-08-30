@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   ResponsiveContainer,
   LineChart,
@@ -16,33 +16,33 @@ interface HourlyDetectionChartProps {
 const HourlyDetectionChart: React.FC<HourlyDetectionChartProps> = ({
   detections,
 }) => {
-  const now = new Date();
-  now.setMinutes(0, 0, 0);
-  const currentHour = now.getHours();
+  const hourlyDetectionTrend = useMemo(() => {
+    const now = new Date();
+    now.setMinutes(0, 0, 0);
+    const currentHour = now.getHours();
 
-  const last24Hours = Array.from({ length: 24 }, (_, i) => {
-    const date = new Date(now);
-    date.setHours(currentHour - i);
-    return {
-      hour: date.getHours(),
-      fullHour: date.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      count: 0,
-    };
-  }).reverse();
+    const last24Hours = Array.from({ length: 24 }, (_, i) => {
+      const date = new Date(now);
+      date.setHours(currentHour - i);
+      return {
+        hour: date.getHours(),
+        fullHour: date.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        count: 0,
+      };
+    }).reverse();
 
-  const hourlyDetectionTrend = detections.reduce((acc, detection) => {
-    const detectionDate = new Date(detection.timestamp);
-    detectionDate.setMinutes(0, 0, 0);
-    const detectionHour = detectionDate.getHours();
-    const hourData = acc.find((entry) => entry.hour === detectionHour);
-    if (hourData) {
-      hourData.count += 1;
-    }
-    return acc;
-  }, last24Hours);
+    return detections.reduce((acc, detection) => {
+      const detectionHour = new Date(detection.timestamp).getHours();
+      const hourData = acc.find((entry) => entry.hour === detectionHour);
+      if (hourData) {
+        hourData.count += 1;
+      }
+      return acc;
+    }, last24Hours);
+  }, [detections]);
 
   return (
     <ResponsiveContainer width="100%" height="85%">
@@ -53,11 +53,8 @@ const HourlyDetectionChart: React.FC<HourlyDetectionChartProps> = ({
         <XAxis dataKey="fullHour" stroke="#fff" />
         <YAxis stroke="#fff" />
         <Tooltip
-          formatter={(value, name, props) => [
-            `Detections: ${value}`,
-            `Hour: ${props.payload.fullHour}`,
-          ]}
-          labelFormatter={() => ""}
+          formatter={(value: number) => [`Detections: ${value}`]}
+          labelFormatter={(label: string) => `Hour: ${label}`}
         />
         <Line type="monotone" dataKey="count" stroke="#82ca9d" />
       </LineChart>

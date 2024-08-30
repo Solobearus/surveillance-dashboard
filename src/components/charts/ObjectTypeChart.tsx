@@ -9,21 +9,25 @@ import {
 } from "recharts";
 import { Detection } from "../../types";
 
+// Move this outside the component to avoid recreating on each render
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+
 interface ObjectTypeChartProps {
   detections: Detection[];
 }
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
-
 const ObjectTypeChart: React.FC<ObjectTypeChartProps> = ({ detections }) => {
-  const objectTypeDistribution = detections.reduce((acc, detection) => {
-    acc[detection.objectType] = (acc[detection.objectType] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const objectTypeChartData = React.useMemo(() => {
+    const objectTypeDistribution = detections.reduce((acc, detection) => {
+      acc[detection.objectType] = (acc[detection.objectType] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
 
-  const objectTypeChartData = Object.entries(objectTypeDistribution).map(
-    ([name, value]) => ({ name, value })
-  );
+    return Object.entries(objectTypeDistribution).map(([name, value]) => ({
+      name,
+      value,
+    }));
+  }, [detections]);
 
   return (
     <ResponsiveContainer width="100%" height="85%">
@@ -37,7 +41,7 @@ const ObjectTypeChart: React.FC<ObjectTypeChartProps> = ({ detections }) => {
           fill="#8884d8"
           dataKey="value"
         >
-          {objectTypeChartData.map((entry, index) => (
+          {objectTypeChartData.map((_, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Pie>
@@ -48,4 +52,4 @@ const ObjectTypeChart: React.FC<ObjectTypeChartProps> = ({ detections }) => {
   );
 };
 
-export default ObjectTypeChart;
+export default React.memo(ObjectTypeChart);

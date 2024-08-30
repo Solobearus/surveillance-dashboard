@@ -10,14 +10,14 @@ const retryDelay = 5000;
 const url = "ws://localhost:8080";
 
 function connectWebSocket(queryClient: ReturnType<typeof useQueryClient>) {
-  if (ws) return; // Prevent multiple connections
+  if (ws) return;
 
   console.log("Connecting to WebSocket server...");
   ws = new WebSocket(url);
 
   ws.onopen = () => {
     console.log("WebSocket connected");
-    attempts = 0; // Reset attempts on successful connection
+    attempts = 0;
   };
 
   ws.onmessage = (event) => {
@@ -48,7 +48,7 @@ function connectWebSocket(queryClient: ReturnType<typeof useQueryClient>) {
       );
     } else {
       attempts += 1;
-      ws = null; // Clear the WebSocket instance
+      ws = null;
       setTimeout(() => connectWebSocket(queryClient), retryDelay);
     }
   };
@@ -56,7 +56,7 @@ function connectWebSocket(queryClient: ReturnType<typeof useQueryClient>) {
   ws.onclose = () => {
     console.log("WebSocket disconnected");
     if (attempts < maxAttempts) {
-      ws = null; // Clear the WebSocket instance
+      ws = null;
       setTimeout(() => connectWebSocket(queryClient), retryDelay);
     }
   };

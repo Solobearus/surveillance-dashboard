@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   ResponsiveContainer,
   BarChart,
@@ -6,7 +6,6 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
 } from "recharts";
 import { Detection } from "../../types";
 
@@ -17,14 +16,17 @@ interface CameraActivityChartProps {
 const CameraActivityChart: React.FC<CameraActivityChartProps> = ({
   detections,
 }) => {
-  const cameraActivity = detections.reduce((acc, detection) => {
-    acc[detection.cameraId] = (acc[detection.cameraId] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const cameraChartData = useMemo(() => {
+    const cameraActivity = detections.reduce((acc, detection) => {
+      acc[detection.cameraId] = (acc[detection.cameraId] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
 
-  const cameraChartData = Object.entries(cameraActivity).map(
-    ([cameraId, count]) => ({ cameraId, count })
-  );
+    return Object.entries(cameraActivity).map(([cameraId, count]) => ({
+      cameraId,
+      count,
+    }));
+  }, [detections]);
 
   return (
     <ResponsiveContainer width="100%" height="85%">
@@ -35,11 +37,11 @@ const CameraActivityChart: React.FC<CameraActivityChartProps> = ({
         <XAxis dataKey="cameraId" stroke="#fff" />
         <YAxis stroke="#fff" />
         <Tooltip
-          formatter={(value, name, props) => [
+          formatter={(value, _, props) => [
             `Detections: ${value}`,
             `Camera: ${props.payload.cameraId}`,
           ]}
-          labelFormatter={() => ""} // Optionally suppress the default label (date) display
+          labelFormatter={() => ""}
         />
         <Bar dataKey="count" fill="#ffc658" />
       </BarChart>
