@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import { Detection } from "../types";
+import Table from "./atoms/Table";
+import TableHeader from "./atoms/TableHeader";
+import TableRow from "./atoms/TableRow";
+import TableCell from "./atoms/TableCell";
+import Button from "./atoms/Button";
 
 interface DetectionTableProps {
   detections: Detection[];
@@ -60,77 +65,61 @@ const DetectionTable: React.FC<DetectionTableProps> = ({
       </div>
 
       <div className="flex-shrink-1 flex-1">
-        <div className="h-full">
-          <table className=" h-full w-full text-sm text-left text-gray-300">
-            <thead className="text-xs text-gray-400 uppercase bg-gray-700 z-10 ">
-              <tr>
-                {[
-                  "id",
-                  "timestamp",
-                  "cameraId",
-                  "objectType",
-                  "confidenceScore",
-                ].map((column) => (
-                  <th
-                    key={column}
-                    className="px-4 py-2 cursor-pointer"
-                    onClick={() => handleSort(column as keyof Detection)}
-                  >
-                    {column}
-                    {sortBy === column && (sortOrder === "asc" ? " ▲" : " ▼")}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="overflow-hidden ">
-              {paginatedDetections.map((detection) => (
-                <tr
-                  key={detection.id}
-                  className="bg-gray-800 border-b border-gray-700"
+        <Table>
+          <thead>
+            <TableRow>
+              {[
+                "id",
+                "timestamp",
+                "cameraId",
+                "objectType",
+                "confidenceScore",
+              ].map((column) => (
+                <TableHeader
+                  key={column}
+                  onClick={() => handleSort(column as keyof Detection)}
                 >
-                  <td className="px-4 py-4 text-sm whitespace-nowrap">
-                    {detection.id}
-                  </td>
-                  <td className="px-4 py-4 text-sm whitespace-nowrap">
-                    {new Date(detection.timestamp).toLocaleString()}
-                  </td>
-                  <td className="px-4 py-4 text-sm whitespace-nowrap">
-                    {detection.cameraId}
-                  </td>
-                  <td className="px-4 py-4 text-sm whitespace-nowrap">
-                    {detection.objectType}
-                  </td>
-                  <td className="px-4 py-4 text-sm whitespace-nowrap">
-                    {detection.confidenceScore.toFixed(2)}
-                  </td>
-                </tr>
+                  {column}
+                  {sortBy === column && (sortOrder === "asc" ? " ▲" : " ▼")}
+                </TableHeader>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TableRow>
+          </thead>
+          <tbody>
+            {paginatedDetections.map((detection) => (
+              <TableRow key={detection.id}>
+                <TableCell>{detection.id}</TableCell>
+                <TableCell>
+                  {new Date(detection.timestamp).toLocaleString()}
+                </TableCell>
+                <TableCell>{detection.cameraId}</TableCell>
+                <TableCell>{detection.objectType}</TableCell>
+                <TableCell>{detection.confidenceScore.toFixed(2)}</TableCell>
+              </TableRow>
+            ))}
+          </tbody>
+        </Table>
       </div>
 
       {/* Pagination */}
       <div className="mt-2 flex justify-between items-center flex-shrink-0">
-        <button
+        <Button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
-          className="bg-blue-500 px-4 py-2 rounded disabled:opacity-50"
         >
           Previous
-        </button>
+        </Button>
         <span>
           Page {currentPage} of {totalPages}
         </span>
-        <button
+        <Button
           onClick={() =>
             setCurrentPage((prev) => Math.min(prev + 1, totalPages))
           }
           disabled={currentPage === totalPages}
-          className="bg-blue-500 px-4 py-2 rounded disabled:opacity-50"
         >
           Next
-        </button>
+        </Button>
       </div>
     </div>
   );

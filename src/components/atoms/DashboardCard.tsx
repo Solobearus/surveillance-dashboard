@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "./Button";
 
 interface CardProps {
   title: string;
@@ -12,9 +13,9 @@ const Card: React.FC<CardProps> = ({ title, children, onClose }) => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold text-white">{title}</h2>
         {onClose && (
-          <button onClick={onClose} className="text-gray-400 hover:text-white">
+          <Button onClick={onClose} className="text-gray-400 hover:text-white">
             &times;
-          </button>
+          </Button>
         )}
       </div>
       {children}

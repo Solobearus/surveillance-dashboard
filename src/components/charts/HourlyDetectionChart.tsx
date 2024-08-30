@@ -16,12 +16,10 @@ interface HourlyDetectionChartProps {
 const HourlyDetectionChart: React.FC<HourlyDetectionChartProps> = ({
   detections,
 }) => {
-  // Get the current date and round down to the nearest full hour
   const now = new Date();
-  now.setMinutes(0, 0, 0); // Round down to the nearest full hour
+  now.setMinutes(0, 0, 0);
   const currentHour = now.getHours();
 
-  // Create an array for the last 24 full hours
   const last24Hours = Array.from({ length: 24 }, (_, i) => {
     const date = new Date(now);
     date.setHours(currentHour - i);
@@ -33,12 +31,11 @@ const HourlyDetectionChart: React.FC<HourlyDetectionChartProps> = ({
       }),
       count: 0,
     };
-  }).reverse(); // Reverse so that the latest hour is on the right
+  }).reverse();
 
-  // Map detections to the last 24 full hours
   const hourlyDetectionTrend = detections.reduce((acc, detection) => {
     const detectionDate = new Date(detection.timestamp);
-    detectionDate.setMinutes(0, 0, 0); // Round down to the nearest full hour
+    detectionDate.setMinutes(0, 0, 0);
     const detectionHour = detectionDate.getHours();
     const hourData = acc.find((entry) => entry.hour === detectionHour);
     if (hourData) {

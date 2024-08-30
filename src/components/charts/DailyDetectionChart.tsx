@@ -16,8 +16,6 @@ interface DailyDetectionChartProps {
 const DailyDetectionChart: React.FC<DailyDetectionChartProps> = ({
   detections,
 }) => {
-  console.log("AAAAAA");
-
   const dailyDetectionCount = detections.reduce((acc, detection) => {
     const date = new Date(detection.timestamp).toLocaleDateString();
     acc[date] = (acc[date] || 0) + 1;

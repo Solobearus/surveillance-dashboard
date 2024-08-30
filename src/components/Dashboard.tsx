@@ -10,6 +10,7 @@ import DailyDetectionChart from "./charts/DailyDetectionChart";
 import HourlyDetectionChart from "./charts/HourlyDetectionChart";
 import CameraActivityChart from "./charts/CameraActivityChart";
 import ObjectTypeChart from "./charts/ObjectTypeChart";
+import Button from "./atoms/Button";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -150,12 +151,12 @@ const Dashboard: React.FC = () => {
                   {charts[chartId].title}
                 </h2>
               </div>
-              <button
+              <Button
                 onClick={() => removeChart(chartId)}
                 className="text-red-500 text-xl cursor-pointer"
               >
                 &times;
-              </button>
+              </Button>
             </div>
             <div className="flex-1 overflow-auto mt-2">
               {charts[chartId].component}
