@@ -48,7 +48,7 @@ const DetectionTable: React.FC<DetectionTableProps> = ({
   };
 
   return (
-    <div className="flex flex-col overflow-scroll-y flex-1">
+    <div className="flex flex-col overflow-scroll-y h-full">
       <div className="mb-2 flex-shrink-0">
         <input
           type="text"
@@ -59,7 +59,7 @@ const DetectionTable: React.FC<DetectionTableProps> = ({
         />
       </div>
 
-      <div className="flex-1">
+      <div className="flex-shrink-1 flex-1">
         <div className="h-full">
           <table className=" h-full w-full text-sm text-left text-gray-300">
             <thead className="text-xs text-gray-400 uppercase bg-gray-700 z-10 ">

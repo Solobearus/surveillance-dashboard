@@ -11,15 +11,11 @@ import { Detection } from "../../types";
 
 interface ObjectTypeChartProps {
   detections: Detection[];
-  onRemove: () => void;
 }
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
-const ObjectTypeChart: React.FC<ObjectTypeChartProps> = ({
-  detections,
-  onRemove,
-}) => {
+const ObjectTypeChart: React.FC<ObjectTypeChartProps> = ({ detections }) => {
   const objectTypeDistribution = detections.reduce((acc, detection) => {
     acc[detection.objectType] = (acc[detection.objectType] || 0) + 1;
     return acc;
@@ -30,36 +26,25 @@ const ObjectTypeChart: React.FC<ObjectTypeChartProps> = ({
   );
 
   return (
-    <>
-      <h2 className="text-xl font-bold mb-2 text-white flex justify-between draggable-handle">
-        Object Type Distribution
-        <button onClick={onRemove} className="text-red-500">
-          &times;
-        </button>
-      </h2>
-      <ResponsiveContainer width="100%" height="85%">
-        <PieChart>
-          <Pie
-            data={objectTypeChartData}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            outerRadius="80%"
-            fill="#8884d8"
-            dataKey="value"
-          >
-            {objectTypeChartData.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
-            ))}
-          </Pie>
-          <Tooltip />
-          <Legend />
-        </PieChart>
-      </ResponsiveContainer>
-    </>
+    <ResponsiveContainer width="100%" height="85%">
+      <PieChart>
+        <Pie
+          data={objectTypeChartData}
+          cx="50%"
+          cy="50%"
+          labelLine={false}
+          outerRadius="80%"
+          fill="#8884d8"
+          dataKey="value"
+        >
+          {objectTypeChartData.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+        <Tooltip />
+        <Legend />
+      </PieChart>
+    </ResponsiveContainer>
   );
 };
 
