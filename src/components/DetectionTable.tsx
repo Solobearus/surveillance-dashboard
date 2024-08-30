@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useCallback, useEffect } from "react";
+import debounce from "lodash.debounce";
 import { Detection } from "../types";
 import Table from "./atoms/Table";
 import TableHeader from "./atoms/TableHeader";
@@ -27,8 +28,20 @@ const DetectionTable: React.FC<DetectionTableProps> = ({
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<keyof Detection>("timestamp");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+
+  const debouncedSearch = useCallback(
+    debounce((value: string) => {
+      setDebouncedSearchTerm(value);
+    }, 300),
+    []
+  );
+
+  useEffect(() => {
+    debouncedSearch(searchTerm);
+  }, [searchTerm, debouncedSearch]);
 
   const filteredDetections = useMemo(() => {
     return detections
@@ -37,15 +50,17 @@ const DetectionTable: React.FC<DetectionTableProps> = ({
           (currentCameraId ? detection.cameraId === currentCameraId : true) &&
           (detection.objectType
             .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-            detection.cameraId.toLowerCase().includes(searchTerm.toLowerCase()))
+            .includes(debouncedSearchTerm.toLowerCase()) ||
+            detection.cameraId
+              .toLowerCase()
+              .includes(debouncedSearchTerm.toLowerCase()))
       )
       .sort((a, b) => {
         if (a[sortBy] < b[sortBy]) return sortOrder === "asc" ? -1 : 1;
         if (a[sortBy] > b[sortBy]) return sortOrder === "asc" ? 1 : -1;
         return 0;
       });
-  }, [detections, currentCameraId, searchTerm, sortBy, sortOrder]);
+  }, [detections, currentCameraId, debouncedSearchTerm, sortBy, sortOrder]);
 
   const totalPages = Math.ceil(filteredDetections.length / itemsPerPage);
   const paginatedDetections = filteredDetections.slice(
