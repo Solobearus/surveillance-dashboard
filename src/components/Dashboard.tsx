@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchDetections, fetchCameras } from "../api";
 import { Detection, Camera } from "../types";
-import { Responsive, WidthProvider } from "react-grid-layout";
+import { Responsive, WidthProvider, Layout } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import DetectionTable from "./DetectionTable";
@@ -10,28 +10,53 @@ import DailyDetectionChart from "./charts/DailyDetectionChart";
 import HourlyDetectionChart from "./charts/HourlyDetectionChart";
 import CameraActivityChart from "./charts/CameraActivityChart";
 import ObjectTypeChart from "./charts/ObjectTypeChart";
-import Button from "./atoms/Button";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-const Dashboard: React.FC = () => {
-  const [layouts, setLayouts] = useState<{ lg: LayoutItem[] }>({
-    lg: [
-      { i: "table", x: 0, y: 0, w: 6, h: 2 },
-      { i: "dailyCount", x: 6, y: 0, w: 3, h: 1 },
-      { i: "hourlyTrend", x: 9, y: 0, w: 3, h: 1 },
-      { i: "cameraActivity", x: 6, y: 1, w: 3, h: 1 },
-      { i: "objectType", x: 9, y: 1, w: 3, h: 1 },
-    ],
-  });
+const chartDefinitions = {
+  table: {
+    title: "Detections",
+    Component: DetectionTable,
+    layout: { i: "table", x: 0, y: 0, w: 6, h: 2 },
+    visible: true,
+  },
+  dailyCount: {
+    title: "Daily Detection Count",
+    Component: DailyDetectionChart,
+    layout: { i: "dailyCount", x: 6, y: 0, w: 3, h: 1 },
+    visible: true,
+  },
+  hourlyTrend: {
+    title: "Hourly Detection Trend",
+    Component: HourlyDetectionChart,
+    layout: { i: "hourlyTrend", x: 9, y: 0, w: 3, h: 1 },
+    visible: true,
+  },
+  cameraActivity: {
+    title: "Camera Activity",
+    Component: CameraActivityChart,
+    layout: { i: "cameraActivity", x: 6, y: 1, w: 3, h: 1 },
+    visible: true,
+  },
+  objectType: {
+    title: "Object Type Distribution",
+    Component: ObjectTypeChart,
+    layout: { i: "objectType", x: 9, y: 1, w: 3, h: 1 },
+    visible: true,
+  },
+};
 
-  const [activeCharts, setActiveCharts] = useState<string[]>([
-    "table",
-    "dailyCount",
-    "hourlyTrend",
-    "cameraActivity",
-    "objectType",
-  ]);
+type ChartId = keyof typeof chartDefinitions;
+
+const Dashboard: React.FC = () => {
+  const [chartLayouts, setChartLayouts] = useState(chartDefinitions);
+
+  const toggleChart = (chartId: ChartId) => {
+    setChartLayouts((prev) => ({
+      ...prev,
+      [chartId]: { ...prev[chartId], visible: !prev[chartId].visible },
+    }));
+  };
 
   const { data: detections, isLoading: detectionsLoading } = useQuery<
     Detection[]
@@ -40,7 +65,7 @@ const Dashboard: React.FC = () => {
     queryFn: fetchDetections,
   });
 
-  const { data: cameras, isLoading: camerasLoading } = useQuery<Camera[]>({
+  const { isLoading: camerasLoading } = useQuery<Camera[]>({
     queryKey: ["cameras"],
     queryFn: fetchCameras,
   });
@@ -49,65 +74,32 @@ const Dashboard: React.FC = () => {
     return <div className="text-white">Loading...</div>;
   }
 
-  const removeChart = (chartId: string) => {
-    setActiveCharts(activeCharts.filter((id) => id !== chartId));
-    setLayouts({
-      lg: layouts.lg.filter((item) => item.i !== chartId),
-    });
-  };
+  const updateLayoutsFromChange = useCallback(
+    (layouts: { lg?: Layout[] }) => {
+      const updatedLayouts = { ...chartLayouts };
+      const lgLayouts = layouts.lg || [];
 
-  const addChart = (chartId: string) => {
-    if (!activeCharts.includes(chartId)) {
-      setActiveCharts([...activeCharts, chartId]);
-      setLayouts({
-        lg: [...layouts.lg, getDefaultLayoutItem(chartId)],
-      });
-    }
-  };
+      for (const layout of lgLayouts) {
+        const chartId = layout.i as ChartId;
+        updatedLayouts[chartId] = {
+          ...chartLayouts[chartId],
+          ...layout,
+        };
+      }
 
-  const toggleChart = (chartId: string) => {
-    if (activeCharts.includes(chartId)) {
-      removeChart(chartId);
-    } else {
-      addChart(chartId);
-    }
-  };
+      return updatedLayouts;
+    },
+    [chartLayouts]
+  );
 
-  const getDefaultLayoutItem = (chartId: string): LayoutItem => {
-    const defaults: { [key: string]: LayoutItem } = {
-      table: { i: "table", x: 0, y: 0, w: 6, h: 2 },
-      dailyCount: { i: "dailyCount", x: 6, y: 0, w: 3, h: 1 },
-      hourlyTrend: { i: "hourlyTrend", x: 9, y: 0, w: 3, h: 1 },
-      cameraActivity: { i: "cameraActivity", x: 6, y: 1, w: 3, h: 1 },
-      objectType: { i: "objectType", x: 9, y: 1, w: 3, h: 1 },
-    };
-    return defaults[chartId];
-  };
-
-  const charts = {
-    table: {
-      title: "Detections",
-      component: (
-        <DetectionTable detections={detections || []} itemsPerPage={7} />
-      ),
-    },
-    dailyCount: {
-      title: "Daily Detection Count",
-      component: <DailyDetectionChart detections={detections || []} />,
-    },
-    hourlyTrend: {
-      title: "Hourly Detection Trend",
-      component: <HourlyDetectionChart detections={detections || []} />,
-    },
-    cameraActivity: {
-      title: "Camera Activity",
-      component: <CameraActivityChart detections={detections || []} />,
-    },
-    objectType: {
-      title: "Object Type Distribution",
-      component: <ObjectTypeChart detections={detections || []} />,
-    },
-  };
+  const layouts = useMemo(
+    () => ({
+      lg: Object.values(chartLayouts)
+        .filter((chart) => chart.visible)
+        .map((chart) => chart.layout),
+    }),
+    [chartLayouts]
+  );
 
   return (
     <div className="p-6 bg-gray-900">
@@ -117,15 +109,15 @@ const Dashboard: React.FC = () => {
 
       <div className="mb-4">
         <h2 className="text-xl font-bold text-white mb-2">Toggle Charts:</h2>
-        {Object.keys(charts).map((chartId) => (
+        {Object.keys(chartDefinitions).map((chartId) => (
           <label key={chartId} className="text-white mr-4">
             <input
               type="checkbox"
-              checked={activeCharts.includes(chartId)}
-              onChange={() => toggleChart(chartId)}
+              checked={chartLayouts[chartId as ChartId].visible}
+              onChange={() => toggleChart(chartId as ChartId)}
               className="mr-1"
             />
-            {charts[chartId].title}
+            {chartDefinitions[chartId as ChartId].title}
           </label>
         ))}
       </div>
@@ -136,36 +128,40 @@ const Dashboard: React.FC = () => {
         breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
         cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
         rowHeight={window.innerHeight / 2 - 50}
-        onLayoutChange={(currentLayout, allLayouts) => setLayouts(allLayouts)}
+        onLayoutChange={(_, layouts) => {
+          setChartLayouts(updateLayoutsFromChange(layouts));
+        }}
         draggableHandle=".draggable-handle"
       >
-        {activeCharts.map((chartId) => (
-          <div
-            key={chartId}
-            data-grid={layouts.lg.find((layout) => layout.i === chartId)}
-            className="bg-gray-800 p-4 rounded flex flex-col h-full w-full"
-          >
-            <div className="flex justify-between items-center">
-              <div className="cursor-pointer draggable-handle flex-1">
-                <h2 className="text-xl font-bold text-white ">
-                  {charts[chartId].title}
-                </h2>
+        {Object.keys(chartLayouts).map((id) => {
+          const chart = chartLayouts[id as ChartId];
+          return (
+            chart.visible && (
+              <div key={id} data-grid={chart.layout}>
+                <div className="bg-gray-800 p-4 rounded-lg h-full">
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="text-lg font-semibold text-white draggable-handle cursor-move">
+                      {chart.title}
+                    </h3>
+                    <button
+                      onClick={() => toggleChart(id as ChartId)}
+                      className="text-gray-400 hover:text-white"
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <chart.Component
+                    detections={detections || []}
+                    itemsPerPage={id === "table" ? 7 : undefined}
+                  />
+                </div>
               </div>
-              <Button
-                onClick={() => removeChart(chartId)}
-                className="text-red-500 text-xl cursor-pointer"
-              >
-                &times;
-              </Button>
-            </div>
-            <div className="flex-1 overflow-auto mt-2">
-              {charts[chartId].component}
-            </div>
-          </div>
-        ))}
+            )
+          );
+        })}
       </ResponsiveGridLayout>
     </div>
   );
 };
 
-export default Dashboard;
+export default React.memo(Dashboard);

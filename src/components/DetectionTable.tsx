@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Detection } from "../types";
 import Table from "./atoms/Table";
 import TableHeader from "./atoms/TableHeader";
@@ -12,6 +12,14 @@ interface DetectionTableProps {
   itemsPerPage?: number;
 }
 
+const TABLE_COLUMNS: (keyof Detection)[] = [
+  "id",
+  "timestamp",
+  "cameraId",
+  "objectType",
+  "confidenceScore",
+];
+
 const DetectionTable: React.FC<DetectionTableProps> = ({
   detections,
   currentCameraId,
@@ -22,20 +30,22 @@ const DetectionTable: React.FC<DetectionTableProps> = ({
   const [sortBy, setSortBy] = useState<keyof Detection>("timestamp");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-  const filteredDetections = detections
-    .filter(
-      (detection) =>
-        (currentCameraId ? detection.cameraId === currentCameraId : true) &&
-        (detection.objectType
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) ||
-          detection.cameraId.toLowerCase().includes(searchTerm.toLowerCase()))
-    )
-    .sort((a, b) => {
-      if (a[sortBy] < b[sortBy]) return sortOrder === "asc" ? -1 : 1;
-      if (a[sortBy] > b[sortBy]) return sortOrder === "asc" ? 1 : -1;
-      return 0;
-    });
+  const filteredDetections = useMemo(() => {
+    return detections
+      .filter(
+        (detection) =>
+          (currentCameraId ? detection.cameraId === currentCameraId : true) &&
+          (detection.objectType
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+            detection.cameraId.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+      .sort((a, b) => {
+        if (a[sortBy] < b[sortBy]) return sortOrder === "asc" ? -1 : 1;
+        if (a[sortBy] > b[sortBy]) return sortOrder === "asc" ? 1 : -1;
+        return 0;
+      });
+  }, [detections, currentCameraId, searchTerm, sortBy, sortOrder]);
 
   const totalPages = Math.ceil(filteredDetections.length / itemsPerPage);
   const paginatedDetections = filteredDetections.slice(
@@ -68,17 +78,8 @@ const DetectionTable: React.FC<DetectionTableProps> = ({
         <Table>
           <thead>
             <TableRow>
-              {[
-                "id",
-                "timestamp",
-                "cameraId",
-                "objectType",
-                "confidenceScore",
-              ].map((column) => (
-                <TableHeader
-                  key={column}
-                  onClick={() => handleSort(column as keyof Detection)}
-                >
+              {TABLE_COLUMNS.map((column) => (
+                <TableHeader key={column} onClick={() => handleSort(column)}>
                   {column}
                   {sortBy === column && (sortOrder === "asc" ? " ▲" : " ▼")}
                 </TableHeader>
@@ -86,7 +87,7 @@ const DetectionTable: React.FC<DetectionTableProps> = ({
             </TableRow>
           </thead>
           <tbody>
-            {paginatedDetections.map((detection) => (
+            {paginatedDetections.map((detection: Detection) => (
               <TableRow key={detection.id}>
                 <TableCell>{detection.id}</TableCell>
                 <TableCell>
