@@ -37,11 +37,19 @@ const CameraActivityChart: React.FC<CameraActivityChartProps> = ({
         </button>
       </h2>
       <ResponsiveContainer width="100%" height="85%">
-        <BarChart data={cameraChartData}>
+        <BarChart
+          data={cameraChartData}
+          margin={{ top: 10, right: 30, left: -30, bottom: 5 }}
+        >
           <XAxis dataKey="cameraId" stroke="#fff" />
           <YAxis stroke="#fff" />
-          <Tooltip />
-          <Legend />
+          <Tooltip
+            formatter={(value, name, props) => [
+              `Detections: ${value}`,
+              `Camera: ${props.payload.cameraId}`,
+            ]}
+            labelFormatter={() => ""} // Optionally suppress the default label (date) display
+          />
           <Bar dataKey="count" fill="#ffc658" />
         </BarChart>
       </ResponsiveContainer>

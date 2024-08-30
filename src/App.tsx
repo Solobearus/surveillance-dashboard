@@ -42,7 +42,7 @@ function App() {
           </div>
         </div>
       </Router>
-      <ToastContainer />
+      <ToastContainer theme="dark" autoClose={1000} />
     </QueryClientProvider>
   );
 }

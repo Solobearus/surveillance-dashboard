@@ -38,11 +38,19 @@ const DailyDetectionChart: React.FC<DailyDetectionChartProps> = ({
         </button>
       </h2>
       <ResponsiveContainer width="100%" height="85%">
-        <BarChart data={dailyChartData}>
+        <BarChart
+          data={dailyChartData}
+          margin={{ top: 10, right: 30, left: -30, bottom: 5 }} // Adjusting margin to move bars more to the left
+        >
           <XAxis dataKey="date" stroke="#fff" />
           <YAxis stroke="#fff" />
-          <Tooltip />
-          <Legend />
+          <Tooltip
+            formatter={(value, name, props) => [
+              `Detections: ${value}`,
+              `Date: ${props.payload.date}`,
+            ]}
+            labelFormatter={() => ""} // Optionally suppress the default label (date) display
+          />
           <Bar dataKey="count" fill="#8884d8" />
         </BarChart>
       </ResponsiveContainer>
