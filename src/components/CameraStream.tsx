@@ -1,14 +1,12 @@
-// components/CameraStream.tsx
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchDetections, fetchCameras } from "../api";
 import { Detection, Camera } from "../types";
 import DetectionTable from "./DetectionTable";
-import Hls from "hls.js";
+import { useHLSStream } from "../hooks/useHLSStream";
 
 const CameraStream: React.FC = () => {
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   const { data: detections, isLoading: detectionsLoading } = useQuery<
     Detection[]
@@ -22,19 +20,7 @@ const CameraStream: React.FC = () => {
     queryFn: fetchCameras,
   });
 
-  useEffect(() => {
-    if (selectedCamera && videoRef.current) {
-      const camera = cameras?.find((c) => c.id === selectedCamera);
-      if (camera && Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(camera.streamUrl);
-        hls.attachMedia(videoRef.current);
-        hls.on(Hls.Events.MANIFEST_PARSED, function () {
-          videoRef.current?.play();
-        });
-      }
-    }
-  }, [selectedCamera, cameras]);
+  const videoRef = useHLSStream(selectedCamera, cameras);
 
   if (detectionsLoading || camerasLoading) return <div>Loading...</div>;
 
