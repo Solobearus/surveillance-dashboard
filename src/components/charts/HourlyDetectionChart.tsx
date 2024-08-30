@@ -31,7 +31,7 @@ const HourlyDetectionChart: React.FC<HourlyDetectionChartProps> = ({
 
   return (
     <>
-      <h2 className="text-xl font-bold mb-2 text-white flex justify-between">
+      <h2 className="text-xl font-bold mb-2 text-white flex justify-between draggable-handle">
         Hourly Detection Trend
         <button onClick={onRemove} className="text-red-500">
           &times;

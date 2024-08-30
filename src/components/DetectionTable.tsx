@@ -1,21 +1,21 @@
-// components/DetectionTable.tsx
 import React, { useState } from "react";
 import { Detection } from "../types";
 
 interface DetectionTableProps {
   detections: Detection[];
   currentCameraId?: string;
+  itemsPerPage?: number;
 }
 
 const DetectionTable: React.FC<DetectionTableProps> = ({
   detections,
   currentCameraId,
+  itemsPerPage = 5,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<keyof Detection>("timestamp");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const itemsPerPage = 10;
 
   const filteredDetections = detections
     .filter(
@@ -48,8 +48,8 @@ const DetectionTable: React.FC<DetectionTableProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="mb-2">
+    <div className="flex flex-col overflow-scroll-y flex-1">
+      <div className="mb-2 flex-shrink-0">
         <input
           type="text"
           placeholder="Search detections..."
@@ -58,49 +58,60 @@ const DetectionTable: React.FC<DetectionTableProps> = ({
           className="w-full p-2 bg-gray-700 rounded"
         />
       </div>
-      <div className="flex-grow overflow-auto">
-        <table className="w-full text-sm text-left text-gray-300">
-          <thead className="text-xs text-gray-400 uppercase bg-gray-700 sticky top-0">
-            <tr>
-              {[
-                "id",
-                "timestamp",
-                "cameraId",
-                "objectType",
-                "confidenceScore",
-              ].map((column) => (
-                <th
-                  key={column}
-                  className="px-6 py-3 cursor-pointer"
-                  onClick={() => handleSort(column as keyof Detection)}
-                >
-                  {column}
-                  {sortBy === column && (sortOrder === "asc" ? " ▲" : " ▼")}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedDetections.map((detection) => (
-              <tr
-                key={detection.id}
-                className="bg-gray-800 border-b border-gray-700"
-              >
-                <td className="px-6 py-4">{detection.id}</td>
-                <td className="px-6 py-4">
-                  {new Date(detection.timestamp).toLocaleString()}
-                </td>
-                <td className="px-6 py-4">{detection.cameraId}</td>
-                <td className="px-6 py-4">{detection.objectType}</td>
-                <td className="px-6 py-4">
-                  {detection.confidenceScore.toFixed(2)}
-                </td>
+
+      <div className="flex-1">
+        <div className="h-full">
+          <table className=" h-full w-full text-sm text-left text-gray-300">
+            <thead className="text-xs text-gray-400 uppercase bg-gray-700 z-10 ">
+              <tr>
+                {[
+                  "id",
+                  "timestamp",
+                  "cameraId",
+                  "objectType",
+                  "confidenceScore",
+                ].map((column) => (
+                  <th
+                    key={column}
+                    className="px-4 py-2 cursor-pointer"
+                    onClick={() => handleSort(column as keyof Detection)}
+                  >
+                    {column}
+                    {sortBy === column && (sortOrder === "asc" ? " ▲" : " ▼")}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="overflow-hidden ">
+              {paginatedDetections.map((detection) => (
+                <tr
+                  key={detection.id}
+                  className="bg-gray-800 border-b border-gray-700"
+                >
+                  <td className="px-4 py-4 text-sm whitespace-nowrap">
+                    {detection.id}
+                  </td>
+                  <td className="px-4 py-4 text-sm whitespace-nowrap">
+                    {new Date(detection.timestamp).toLocaleString()}
+                  </td>
+                  <td className="px-4 py-4 text-sm whitespace-nowrap">
+                    {detection.cameraId}
+                  </td>
+                  <td className="px-4 py-4 text-sm whitespace-nowrap">
+                    {detection.objectType}
+                  </td>
+                  <td className="px-4 py-4 text-sm whitespace-nowrap">
+                    {detection.confidenceScore.toFixed(2)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div className="mt-2 flex justify-between items-center">
+
+      {/* Pagination */}
+      <div className="mt-2 flex justify-between items-center flex-shrink-0">
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}

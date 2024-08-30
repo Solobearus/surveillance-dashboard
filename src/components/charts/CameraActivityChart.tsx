@@ -30,7 +30,7 @@ const CameraActivityChart: React.FC<CameraActivityChartProps> = ({
 
   return (
     <>
-      <h2 className="text-xl font-bold mb-2 text-white flex justify-between">
+      <h2 className="text-xl font-bold mb-2 text-white flex justify-between draggable-handle">
         Camera Activity
         <button onClick={onRemove} className="text-red-500">
           &times;

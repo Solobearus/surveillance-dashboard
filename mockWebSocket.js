@@ -7,7 +7,7 @@ wss.on("connection", (ws) => {
 
   const interval = setInterval(() => {
     const newDetection = {
-      id: Date.now(),
+      id: Date.now().slice(-4),
       timestamp: new Date().toISOString(),
       cameraId: `CAM00${Math.floor(Math.random() * 5) + 1}`,
       objectType: ["person", "vehicle", "animal"][

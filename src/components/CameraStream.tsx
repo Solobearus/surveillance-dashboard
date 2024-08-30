@@ -39,7 +39,7 @@ const CameraStream: React.FC = () => {
   if (detectionsLoading || camerasLoading) return <div>Loading...</div>;
 
   return (
-    <div className="h-full p-6 bg-gray-900 text-white">
+    <div className="h-full p-6 bg-gray-900 text-white flex flex-col">
       <h1 className="text-3xl font-bold mb-6">Camera Stream</h1>
       <div className="mb-4">
         <select
@@ -55,22 +55,18 @@ const CameraStream: React.FC = () => {
           ))}
         </select>
       </div>
-      <div className="grid grid-cols-2 gap-4 h-[calc(100%-120px)]">
-        <div className="bg-gray-800 p-4 rounded">
+      <div className="grid grid-cols-2 gap-4 flex flex-col flex-1">
+        <div className="bg-gray-800 p-4 rounded flex flex-col">
           <h2 className="text-xl font-bold mb-2">Live Stream</h2>
           {selectedCamera ? (
-            <video
-              ref={videoRef}
-              className="w-full h-[calc(100%-40px)]"
-              controls
-            />
+            <video ref={videoRef} className="w-full flex-1" controls />
           ) : (
-            <div className="w-full h-[calc(100%-40px)] flex items-center justify-center bg-gray-700">
+            <div className="w-full flex-1 flex items-center justify-center bg-gray-700">
               <p>Select a camera to view the stream</p>
             </div>
           )}
         </div>
-        <div className="bg-gray-800 p-4 rounded">
+        <div className="bg-gray-800 p-4 rounded flex flex-col">
           <h2 className="text-xl font-bold mb-2">Recent Detections</h2>
           {selectedCamera ? (
             <DetectionTable
@@ -78,7 +74,7 @@ const CameraStream: React.FC = () => {
               currentCameraId={selectedCamera}
             />
           ) : (
-            <div className="w-full h-[calc(100%-40px)] flex items-center justify-center bg-gray-700">
+            <div className="w-full flex-1 flex items-center justify-center bg-gray-700">
               <p>Select a camera to view detections</p>
             </div>
           )}

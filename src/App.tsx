@@ -34,7 +34,7 @@ function App() {
               </li>
             </ul>
           </nav>
-          <div className="flex-grow overflow-hidden">
+          <div className="flex-grow">
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/camera" element={<CameraStream />} />

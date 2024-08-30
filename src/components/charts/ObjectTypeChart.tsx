@@ -31,7 +31,7 @@ const ObjectTypeChart: React.FC<ObjectTypeChartProps> = ({
 
   return (
     <>
-      <h2 className="text-xl font-bold mb-2 text-white flex justify-between">
+      <h2 className="text-xl font-bold mb-2 text-white flex justify-between draggable-handle">
         Object Type Distribution
         <button onClick={onRemove} className="text-red-500">
           &times;
