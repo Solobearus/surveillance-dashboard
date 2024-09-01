@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, useEffect } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import debounce from "lodash.debounce";
 import { Detection } from "../types";
 import Table from "./atoms/Table";
