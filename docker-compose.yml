@@ -1,0 +1,25 @@
+version: '3'
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mock-api
+      - mock-ws
+
+  mock-api:
+    build:
+      context: ./mock-api
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+
+  mock-ws:
+    build:
+      context: ./mock-ws
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"

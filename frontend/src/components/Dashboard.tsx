@@ -13,7 +13,20 @@ import ObjectTypeChart from "./charts/ObjectTypeChart";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-const chartDefinitions = {
+interface ChartProps {
+  detections: Detection[];
+  itemsPerPage?: number;
+}
+
+const chartDefinitions: Record<
+  string,
+  {
+    title: string;
+    Component: React.FC<ChartProps>;
+    layout: Layout;
+    visible: boolean;
+  }
+> = {
   table: {
     title: "Detections",
     Component: DetectionTable,
@@ -72,7 +85,10 @@ const Dashboard: React.FC = () => {
         const chartId = layout.i as ChartId;
         updatedLayouts[chartId] = {
           ...chartLayouts[chartId],
-          ...layout,
+          layout: {
+            ...chartLayouts[chartId].layout,
+            ...layout,
+          },
         };
       }
 

@@ -7,7 +7,7 @@ let ws: WebSocket | null = null;
 let attempts = 0;
 const maxAttempts = 3;
 const retryDelay = 5000;
-const url = "ws://localhost:8080";
+const url = import.meta.env.VITE_WS_URL;
 
 function connectWebSocket(queryClient: ReturnType<typeof useQueryClient>) {
   if (ws) return;
