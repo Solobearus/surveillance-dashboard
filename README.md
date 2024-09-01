@@ -38,12 +38,14 @@ The project is divided into three parts:
 ### Manual Setup (Alternative)
 
 1. Clone the repository:
+
    ```bash
    git clone <repository-url>
    cd surveillance-dashboard
    ```
 
 2. Set up and start the frontend:
+
    ```bash
    cd frontend
    npm install
@@ -51,6 +53,7 @@ The project is divided into three parts:
    ```
 
 3. In a new terminal, set up and start the mock API:
+
    ```bash
    cd mock-api
    npm install
@@ -58,6 +61,7 @@ The project is divided into three parts:
    ```
 
 4. In another terminal, set up and start the mock WebSocket service:
+
    ```bash
    cd mock-ws
    npm install
@@ -72,12 +76,23 @@ The project is divided into three parts:
 - **React**: Chosen for its component-based architecture and large ecosystem.
 - **TypeScript**: Adds static typing to improve code quality and developer experience.
 - **Vite**: Used as a build tool for its fast development server and efficient builds.
-- **React Query**: Manages server state and provides caching capabilities.
-- **React Router**: Handles routing within the application.
+- **React Query**: Manages server state, provides caching capabilities, and optimizes data fetching.
+- **React Router**: Handles client-side routing within the application.
 - **React Grid Layout**: Allows for a customizable, draggable dashboard layout.
-- **Recharts**: Provides responsive and customizable charts.
+- **Recharts**: Provides responsive and customizable charts for data visualization.
 - **HLS.js**: Enables HLS video streaming in the browser.
 - **Docker**: Ensures consistent development and deployment environments.
+
+Additional techniques and patterns used:
+
+- **Debouncing**: Utilized `lodash.debounce` to optimize performance for input fields and search functionality.
+- **Memoization**: Employed React's `useMemo` and `useCallback` hooks to optimize rendering performance.
+- **Atomic Design**: Implemented a basic design system with reusable components following atomic design principles. This approach can be further improved for larger projects.
+- **Custom Hooks**: Created reusable custom hooks to encapsulate and share logic across components.
+- **Monorepo Structure**: Organized the project as a monorepo, containing frontend, mock API, and mock WebSocket services for easier management.
+- **WebSocket Integration**: Implemented WebSocket functionality for real-time updates and notifications.
+
+These choices and techniques were selected to create a scalable, performant, and maintainable application while providing a smooth development experience.
 
 ## Assumptions and Simplifications
 
@@ -96,10 +111,12 @@ The project is divided into three parts:
 6. Optimize performance for handling larger datasets.
 7. Implement real-time collaboration features.
 
-## Contributing
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+Copyright (c) 2024 Ivan Solodov
+
+All rights reserved.
+
+This project is proprietary and confidential. Viewing the source code is permitted, but any reproduction, distribution, or use of the software requires explicit written permission from the copyright holder.
+
+For permissions or inquiries, please contact Ivansolobear@gmail.com.
