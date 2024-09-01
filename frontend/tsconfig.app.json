@@ -20,5 +20,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "mockWebSocket.js"]
+  "include": ["src", "mock-ws/mockWebSocket.js"]
 }

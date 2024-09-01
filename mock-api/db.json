@@ -251,31 +251,31 @@
       "id": "CAM001",
       "name": "Front Entrance",
       "location": "Main Building",
-      "streamUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+      "streamUrl": "http://playertest.longtailvideo.com/adaptive/oceans_aes/oceans_aes.m3u8"
     },
     {
       "id": "CAM002",
       "name": "Parking Lot",
       "location": "East Wing",
-      "streamUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+      "streamUrl": "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
     },
     {
       "id": "CAM003",
       "name": "Cafetiria",
       "location": "Main Building",
-      "streamUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+      "streamUrl": "ttps://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
     },
     {
       "id": "CAM004",
       "name": "Trash area",
       "location": "Main Building",
-      "streamUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+      "streamUrl": "http://playertest.longtailvideo.com/adaptive/oceans_aes/oceans_aes.m3u8"
     },
     {
       "id": "CAM005",
       "name": "Back Entrance",
       "location": "Main Building",
-      "streamUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+      "streamUrl": "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
     },
     {
       "id": "CAM006",
@@ -287,7 +287,7 @@
       "id": "CAM007",
       "name": "Fire Exit",
       "location": "Main Building",
-      "streamUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+      "streamUrl": "http://playertest.longtailvideo.com/adaptive/oceans_aes/oceans_aes.m3u8"
     }
   ]
 }
