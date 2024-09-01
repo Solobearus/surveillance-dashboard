@@ -26,13 +26,18 @@ The project is divided into three parts:
    cd surveillance-dashboard
    ```
 
-2. Build and run the Docker containers:
+2. duplicate .env.exmpale file as .env in ./frontend
+
+Note: in real-world applications, it's crucial to keep sensitive information out of version control.
+But for the porpuse of this task and since there is nothing sensitive here as this will run locally only, I have put the correct envs in the .env.example
+
+3. Build and run the Docker containers:
 
    ```bash
    docker-compose up --build
    ```
 
-3. Access the application:
+4. Access the application:
    - Frontend: http://localhost:3000
 
 ### Manual Setup (Alternative)
@@ -44,7 +49,12 @@ The project is divided into three parts:
    cd surveillance-dashboard
    ```
 
-2. Set up and start the frontend:
+2. duplicate .env.exmpale file as .env in ./frontend
+
+Note: in real-world applications, it's crucial to keep sensitive information out of version control.
+But for the porpuse of this task and since there is nothing sensitive here as this will run locally only, I have put the correct envs in the .env.example
+
+3. Set up and start the frontend:
 
    ```bash
    cd frontend
@@ -52,7 +62,7 @@ The project is divided into three parts:
    npm run dev
    ```
 
-3. In a new terminal, set up and start the mock API:
+4. In a new terminal, set up and start the mock API:
 
    ```bash
    cd mock-api
@@ -60,7 +70,7 @@ The project is divided into three parts:
    npm start
    ```
 
-4. In another terminal, set up and start the mock WebSocket service:
+5. In another terminal, set up and start the mock WebSocket service:
 
    ```bash
    cd mock-ws
@@ -68,7 +78,7 @@ The project is divided into three parts:
    npm start
    ```
 
-5. Access the application:
+6. Access the application:
    - Frontend: http://localhost:3000
 
 ## Technical Choices

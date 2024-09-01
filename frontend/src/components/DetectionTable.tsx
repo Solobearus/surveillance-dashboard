@@ -36,7 +36,10 @@ const DetectionTable: React.FC<DetectionTableProps> = ({
   const [sortBy, setSortBy] = useState<keyof Detection>("timestamp");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-  const [timeRange, setTimeRange] = useState<{ start: Date | null; end: Date | null }>({ start: null, end: null });
+  const [timeRange, setTimeRange] = useState<{
+    start: Date | null;
+    end: Date | null;
+  }>({ start: null, end: null });
   const [selectedCameras, setSelectedCameras] = useState<string[]>([]);
   const [confidenceRange, setConfidenceRange] = useState({ min: 0, max: 1 });
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
@@ -52,15 +55,17 @@ const DetectionTable: React.FC<DetectionTableProps> = ({
     [detections]
   );
 
-  const debouncedSearch = useCallback(
-    debounce((value: string) => {
-      setDebouncedSearchTerm(value);
-    }, 300),
-    []
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setDebouncedSearchTerm(value);
+      }, 300),
+    [setDebouncedSearchTerm]
   );
 
   useEffect(() => {
     debouncedSearch(searchTerm);
+    return () => debouncedSearch.cancel();
   }, [searchTerm, debouncedSearch]);
 
   const filteredDetections = useMemo(() => {
