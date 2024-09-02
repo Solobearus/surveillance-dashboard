@@ -6,7 +6,7 @@ import DetectionTable from "./DetectionTable";
 import { useHLSStream } from "../hooks/useHLSStream";
 
 const CameraStream: React.FC = () => {
-  const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
+  const [currentCameraId, setCurrentCameraId] = useState<string | null>(null);
 
   const { data: detections, isLoading: detectionsLoading } = useQuery<
     Detection[]
@@ -20,7 +20,7 @@ const CameraStream: React.FC = () => {
     queryFn: fetchCameras,
   });
 
-  const videoRef = useHLSStream(selectedCamera, cameras);
+  const videoRef = useHLSStream(currentCameraId, cameras);
 
   if (detectionsLoading || camerasLoading) return <div>Loading...</div>;
 
@@ -30,8 +30,8 @@ const CameraStream: React.FC = () => {
       <div className="mb-4">
         <select
           className="bg-gray-700 text-white p-2 rounded"
-          value={selectedCamera || ""}
-          onChange={(e) => setSelectedCamera(e.target.value)}
+          value={currentCameraId || ""}
+          onChange={(e) => setCurrentCameraId(e.target.value)}
         >
           <option value="">Select a camera</option>
           {cameras?.map((camera) => (
@@ -44,7 +44,7 @@ const CameraStream: React.FC = () => {
       <div className="grid grid-cols-2 gap-4 flex flex-col flex-1">
         <div className="bg-gray-800 p-4 rounded flex flex-col">
           <h2 className="text-xl font-bold mb-2">Live Stream</h2>
-          {selectedCamera ? (
+          {currentCameraId ? (
             <video ref={videoRef} className="w-full flex-1" controls />
           ) : (
             <div className="w-full flex-1 flex items-center justify-center bg-gray-700">
@@ -54,10 +54,10 @@ const CameraStream: React.FC = () => {
         </div>
         <div className="bg-gray-800 p-4 rounded flex flex-col">
           <h2 className="text-xl font-bold mb-2">Recent Detections</h2>
-          {selectedCamera ? (
+          {currentCameraId ? (
             <DetectionTable
               detections={detections || []}
-              currentCameraId={selectedCamera}
+              config={{ currentCameraId }}
             />
           ) : (
             <div className="w-full flex-1 flex items-center justify-center bg-gray-700">
