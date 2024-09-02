@@ -21,7 +21,10 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   return (
     <div className="flex flex-col space-y-2">
       {options.map((option) => (
-        <label key={option} className="flex items-center space-x-2 text-gray-300">
+        <label
+          key={option}
+          className="flex items-center space-x-2 text-gray-300"
+        >
           <input
             type="checkbox"
             checked={selected.includes(option)}
