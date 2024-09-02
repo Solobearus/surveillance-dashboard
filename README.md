@@ -1,8 +1,8 @@
-# Surveillance Dashboard
+# Surveillance Dashboard 📊
 
 A real-time surveillance dashboard built with React, Vite, and TypeScript.
 
-## Project Structure
+## Project Structure 🏗️
 
 The project is divided into three parts:
 
@@ -10,14 +10,14 @@ The project is divided into three parts:
 - `mock-api/`: Contains a mock API with json-server
 - `mock-ws/`: Contains a mock WebSocket service
 
-## Prerequisites
+## Prerequisites 📋
 
 - Docker and Docker Compose
 - Node.js (for local development)
 
-## Setup Instructions
+## Setup Instructions 🛠️
 
-### Using Docker (Recommended)
+### Using Docker (Recommended) 🐳
 
 1. Clone the repository:
 
@@ -26,10 +26,10 @@ The project is divided into three parts:
    cd surveillance-dashboard
    ```
 
-2. duplicate .env.exmpale file as .env in ./frontend
+2. Duplicate `.env.example` file as `.env` in `./frontend`
 
-Note: in real-world applications, it's crucial to keep sensitive information out of version control.
-But for the porpuse of this task and since there is nothing sensitive here as this will run locally only, I have put the correct envs in the .env.example
+   Note: In real-world applications, it's crucial to keep sensitive information out of version control.
+   But for the purpose of this task and since there is nothing sensitive here as this will run locally only, I have put the correct envs in the `.env.example`.
 
 3. Build and run the Docker containers:
 
@@ -40,7 +40,7 @@ But for the porpuse of this task and since there is nothing sensitive here as th
 4. Access the application:
    - Frontend: http://localhost:3000
 
-### Manual Setup (Alternative)
+### Manual Setup (Alternative) 🖥️
 
 1. Clone the repository:
 
@@ -49,10 +49,10 @@ But for the porpuse of this task and since there is nothing sensitive here as th
    cd surveillance-dashboard
    ```
 
-2. duplicate .env.exmpale file as .env in ./frontend
+2. Duplicate `.env.example` file as `.env` in `./frontend`
 
-Note: in real-world applications, it's crucial to keep sensitive information out of version control.
-But for the porpuse of this task and since there is nothing sensitive here as this will run locally only, I have put the correct envs in the .env.example
+   Note: In real-world applications, it's crucial to keep sensitive information out of version control.
+   But for the purpose of this task and since there is nothing sensitive here as this will run locally only, I have put the correct envs in the `.env.example`.
 
 3. Set up and start the frontend:
 
@@ -81,7 +81,7 @@ But for the porpuse of this task and since there is nothing sensitive here as th
 6. Access the application:
    - Frontend: http://localhost:3000
 
-## Technical Choices
+## Technical Choices 💡
 
 - **React**: Chosen for its component-based architecture and large ecosystem.
 - **TypeScript**: Adds static typing to improve code quality and developer experience.
@@ -104,14 +104,14 @@ Additional techniques and patterns used:
 
 These choices and techniques were selected to create a scalable, performant, and maintainable application while providing a smooth development experience.
 
-## Assumptions and Simplifications
+## Assumptions and Simplifications 🤔
 
 - The mock API and WebSocket services simulate real-time data and events.
 - User authentication and authorization are not implemented in this version.
 - The dashboard layout is saved locally and not persisted to a backend.
 - Video streams are simulated and not connected to real camera feeds.
 
-## Future Improvements
+## Future Improvements 🚀
 
 1. Implement user authentication and role-based access control.
 2. Add backend persistence for user preferences and dashboard layouts.
@@ -121,7 +121,7 @@ These choices and techniques were selected to create a scalable, performant, and
 6. Optimize performance for handling larger datasets.
 7. Implement real-time collaboration features.
 
-## License
+## License 📜
 
 Copyright (c) 2024 Ivan Solodov
 
