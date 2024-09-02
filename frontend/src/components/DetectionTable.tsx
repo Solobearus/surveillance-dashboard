@@ -7,7 +7,7 @@ import TableRow from "./atoms/TableRow";
 import TableCell from "./atoms/TableCell";
 import Button from "./atoms/Button";
 import Popover from "./atoms/Popover";
-import MultiSelect from "./MultiSelect";
+import MultiSelect from "./atoms/MultiSelect";
 import DateRangePicker from "./atoms/DateRangePicker";
 import RangeSlider from "./atoms/RangeSlider";
 
