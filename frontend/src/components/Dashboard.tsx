@@ -10,8 +10,6 @@ import DailyDetectionChart from "./charts/DailyDetectionChart";
 import HourlyDetectionChart from "./charts/HourlyDetectionChart";
 import CameraActivityChart from "./charts/CameraActivityChart";
 import ObjectTypeChart from "./charts/ObjectTypeChart";
-import { YAxis } from 'recharts';
-YAxis.defaultProps = {};
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
