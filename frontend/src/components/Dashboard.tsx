@@ -15,7 +15,7 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 
 interface ChartProps {
   detections: Detection[];
-  itemsPerPage?: number;
+  config?: Record<string, unknown>;
 }
 
 const chartDefinitions: Record<
@@ -168,7 +168,7 @@ const Dashboard: React.FC = () => {
                   </div>
                   <chart.Component
                     detections={detections || []}
-                    itemsPerPage={id === "table" ? 7 : undefined}
+                    config={{ itemsPerPage: id === "table" ? 7 : undefined }}
                   />
                 </div>
               </div>

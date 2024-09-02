@@ -13,8 +13,10 @@ import RangeSlider from "./atoms/RangeSlider";
 
 interface DetectionTableProps {
   detections: Detection[];
-  currentCameraId?: string;
-  itemsPerPage?: number;
+  config?: {
+    currentCameraId?: string;
+    itemsPerPage?: number;
+  };
 }
 
 const TABLE_COLUMNS: (keyof Detection)[] = [
@@ -27,9 +29,10 @@ const TABLE_COLUMNS: (keyof Detection)[] = [
 
 const DetectionTable: React.FC<DetectionTableProps> = ({
   detections,
-  currentCameraId,
-  itemsPerPage = 5,
+  config = {},
 }) => {
+  const { itemsPerPage = 5, currentCameraId } = config;
+
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
