@@ -6,6 +6,16 @@ import Dashboard from "./components/Dashboard";
 import CameraStream from "./components/CameraStream";
 import { useWebSocket } from "./hooks/useWebSocket";
 
+// This is a workaround for a warning that is caused by recharts library
+// unfortunatly they did not update their base code to solve it
+// this warning (masked as error) does not affect the code
+const originalWarn = console.error;
+console.error = (msg, ...args) => {
+  if (!msg.includes("Support for defaultProps")) {
+    originalWarn(msg, ...args);
+  }
+};
+
 const queryClient = new QueryClient();
 
 function WebSocketWrapper() {
